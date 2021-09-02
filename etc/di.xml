@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @description DI configuration
+ *
+ * @author Bina Commerce      <https://www.binacommerce.com>
+ * @author C. M. de Picciotto <cmdepicciotto@binacommerce.com>
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    /**
+     *
+     * @note Add preference for IP info interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\IpInfoInterface" type="ipinfo\ipinfo\IPinfo"/>
+
+    <!--
+    /**
+     *
+     * @note Add preference for geo IP management interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\IpManagementInterface" type="Bina\GeoIp\Model\IpManagement"/>
+
+    <!--
+    /**
+     *
+     * @note Add preference for geo IP session interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\SessionInterface" type="Bina\GeoIp\Model\Session"/>
+
+    <!--
+    /**
+     *
+     * @note Geo IP session model
+     *
+     */
+    -->
+    <type name="Bina\GeoIp\Model\Session">
+        <arguments>
+            <argument name="storage" xsi:type="object">Bina\GeoIp\Model\Session\Storage</argument>
+        </arguments>
+    </type>
+    <virtualType name="Bina\GeoIp\Model\Session\Storage" type="Magento\Framework\Session\Storage">
+        <arguments>
+            <argument name="namespace" xsi:type="string">geo_ip</argument>
+        </arguments>
+    </virtualType>
+</config>

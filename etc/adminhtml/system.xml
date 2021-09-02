@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @description System config
+ *
+ * @author Bina Commerce      <https://www.binacommerce.com>
+ * @author C. M. de Picciotto <cmdepicciotto@binacommerce.com>
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!--
+        /**
+         *
+         * @note 'General' section
+         *
+         */
+        -->
+        <section id="general">
+            <!--
+            /**
+             *
+             * @note 'Country' group
+             *
+             */
+            -->
+            <group id="country">
+                <!--
+                /**
+                 *
+                 * @note Add 'Geo IP Countries'
+                 *
+                 */
+                -->
+                <field id="geo_ip" translate="label comment" type="multiselect" sortOrder="100" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>Geo IP Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <comment><![CDATA[Countries related to this store view considering user IP.]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

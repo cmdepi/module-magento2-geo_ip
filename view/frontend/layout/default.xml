@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @description Default layout customizations
+ *
+ * @author Bina Commerce      <https://www.binacommerce.com>
+ * @author C. M. de Picciotto <cmdepicciotto@binacommerce.com>
+ *
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <!--
+    /**
+     *
+     * @note Body
+     *
+     */
+    -->
+    <body>
+        <!--
+        /**
+         *
+         * @note Before body end
+         *
+         */
+        -->
+        <referenceContainer name="before.body.end">
+            <!--
+            /**
+             *
+             * @note Add popup
+             *
+             */
+            -->
+            <block class="Bina\GeoIp\Block\Popup" name="geo.ip.popup"/>
+        </referenceContainer>
+    </body>
+</page>
