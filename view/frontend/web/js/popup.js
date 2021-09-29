@@ -72,7 +72,7 @@ define([
                 url       : self.options.checkIpUrl,
                 type      : 'GET',
                 dataType  : 'json',
-                data      : {current_url: self.currentUrl},
+                data      : {current_url: self.options.currentUrl},
                 showLoader: false
             }).done(function (data) {
                 /**
