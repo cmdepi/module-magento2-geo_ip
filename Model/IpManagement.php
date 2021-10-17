@@ -56,7 +56,7 @@ class IpManagement implements IpManagementInterface
 
         /**
          *
-         * @note Set flag as checked (in that way, we disable the possibility to the this check again)
+         * @note Set flag as checked (in that way, we disable the possibility to do this check again)
          *
          */
         $this->_session->setIsLocationChecked(true);
