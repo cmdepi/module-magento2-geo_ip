@@ -121,7 +121,7 @@ define([
                     },
                     {
                         text : $.mage.__('Cancel'),
-                        class: 'action cancel',
+                        class: 'action primary cancel',
                         click: function () {
                             this.closeModal(true);
                         }
