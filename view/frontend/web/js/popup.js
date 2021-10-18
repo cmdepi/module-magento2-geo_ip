@@ -118,13 +118,6 @@ define([
                         click: function () {
                             location.href = url;
                         }
-                    },
-                    {
-                        text : $.mage.__('Cancel'),
-                        class: 'action primary cancel',
-                        click: function () {
-                            this.closeModal(true);
-                        }
                     }
                 ]
             });
