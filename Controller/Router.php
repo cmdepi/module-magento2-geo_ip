@@ -11,11 +11,11 @@
  */
 namespace Bina\GeoIp\Controller;
 
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\RouterInterface;
-use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\ActionFactory;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\Action\Redirect;
 use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\Store\Api\Data\StoreInterface;
@@ -57,17 +57,17 @@ class Router implements RouterInterface
 
     /**
      *
-     * @var HttpResponse
-     *
-     */
-    protected $_response;
-
-    /**
-     *
      * @var ActionFactory
      *
      */
     protected $_actionFactory;
+
+    /**
+     *
+     * @var HttpResponse
+     *
+     */
+    protected $_response;
 
     /**
      *
@@ -112,7 +112,7 @@ class Router implements RouterInterface
 
         /**
          *
-         * @note Set cookie manager
+         * @note Init cookie manager
          *
          */
         $this->_cookieManager = $cookieManager;

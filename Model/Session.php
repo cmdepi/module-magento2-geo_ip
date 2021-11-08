@@ -138,6 +138,8 @@ class Session extends SessionManager implements SessionInterface
      *
      * @return int
      *
+     * @note It returned 0 as store ID when it is not possible to determine a store for user IP
+     *
      */
     public function getUserStoreFromIp()
     {
@@ -146,7 +148,7 @@ class Session extends SessionManager implements SessionInterface
          * @note Check if store ID is already set in user session
          *
          */
-        if ($storeId = $this->getStoreId()) {
+        if (!is_null($storeId = $this->getStoreId())) {
             /**
              *
              * @note Return store ID
@@ -210,7 +212,7 @@ class Session extends SessionManager implements SessionInterface
      *
      * Get store ID
      *
-     * @return int
+     * @return int|null
      *
      */
     public function getStoreId()
@@ -296,7 +298,7 @@ class Session extends SessionManager implements SessionInterface
         /**
          *
          * @note Get config data related to this default country
-         * @note Because the country code values are saved using the ISO 2 format, it is possible to filter using this like condition (all country codes have 3 characters so it is not possible to have more than one coincidence)
+         * @note Because the country code values are saved using the ISO 2 format, it is possible to filter using this like condition (all country codes have 3 characters, so it is not possible to have more than one coincidence)
          *
          */
         $collection->addFieldToFilter('path', array('eq' => SystemConfigInterface::GEO_IP_COUNTRIES));
