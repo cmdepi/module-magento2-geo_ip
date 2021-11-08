@@ -22,15 +22,6 @@
     <!--
     /**
      *
-     * @note Add preference for geo IP management interface
-     *
-     */
-    -->
-    <preference for="Bina\GeoIp\Api\IpManagementInterface" type="Bina\GeoIp\Model\IpManagement"/>
-
-    <!--
-    /**
-     *
      * @note Add preference for geo IP session interface
      *
      */

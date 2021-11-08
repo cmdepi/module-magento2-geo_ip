@@ -13,37 +13,37 @@ interface SessionInterface
 {
     /**
      *
-     * @const IS_LOCATION_CHECKED
+     * @const STORE_ID
      *
      */
-    const IS_LOCATION_CHECKED = 'is_location_checked';
+    const STORE_ID = 'store_id';
 
     /**
      *
-     * Get user store from location
+     * Get user store from IP
      *
      * @return int
      *
      */
-    public function getUserStoreFromLocation();
+    public function getUserStoreFromIp();
 
     /**
      *
-     * Get is location checked flag
+     * Get store ID
      *
-     * @return bool
+     * @return int
      *
      */
-    public function getIsLocationChecked();
+    public function getStoreId();
 
     /**
      *
-     * Set is location checked flag
+     * Set store ID
      *
-     * @param bool $isLocationChecked
+     * @param int $storeId
      *
      * @return void
      *
      */
-    public function setIsLocationChecked($isLocationChecked);
+    public function setStoreId($storeId);
 }

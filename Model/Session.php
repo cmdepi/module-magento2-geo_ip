@@ -23,7 +23,6 @@ use Magento\Framework\Session\ValidatorInterface;
 use Magento\Framework\Session\StorageInterface;
 use Magento\Framework\Session\SessionStartChecker;
 use Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory;
-use Magento\Config\Model\ResourceModel\Config\Data\Collection;
 use Bina\GeoIp\Api\SystemConfigInterface;
 use Bina\GeoIp\Api\SessionInterface;
 use Bina\GeoIp\Api\IpInfoInterfaceFactory;
@@ -135,60 +134,67 @@ class Session extends SessionManager implements SessionInterface
 
     /**
      *
-     * Get user store from location
+     * Get user store from IP
      *
      * @return int
      *
      */
-    public function getUserStoreFromLocation()
+    public function getUserStoreFromIp()
     {
         /**
          *
-         * @note Validate if the user location was already checked
+         * @note Check if store ID is already set in user session
          *
          */
-        if (!$this->getIsLocationChecked()) {
+        if ($storeId = $this->getStoreId()) {
             /**
              *
-             * @note Get IP details
+             * @note Return store ID
              *
              */
-            $ipDetails = $this->_getIpDetails();
+            return $storeId;
+        }
+
+        /**
+         *
+         * @note Get user IP details
+         *
+         */
+        $ipDetails = $this->_getIpDetails();
+
+        /**
+         *
+         * @note Check if country exists for user IP
+         *
+         */
+        if (isset($ipDetails->country)) {
+            /**
+             *
+             * @note Get country related to IP
+             *
+             */
+            $country = $ipDetails->country;
 
             /**
              *
-             * @note Check country
+             * @note Get config item
              *
              */
-            if (isset($ipDetails->country)) {
-                /**
-                 *
-                 * @note Get country related to IP
-                 *
-                 */
-                $country = $ipDetails->country;
+            $item = $this->_getConfigItemRelatedToCountry($country);
 
+            /**
+             *
+             * @note Check item
+             *
+             */
+            if ($item) {
                 /**
                  *
-                 * @note Get config item
+                 * @note Return store ID
+                 * @note All config values are at store level, so the scope ID is related to a store ID
                  *
                  */
-                $item = $this->_getConfigItemRelatedToCountry($country);
-
-                /**
-                 *
-                 * @note Check item
-                 *
-                 */
-                if ($item) {
-                    /**
-                     *
-                     * @note Return store ID
-                     * @note All config values are at store level, so the scope ID is related to a store ID
-                     *
-                     */
-                    return $item->getData('scope_id');
-                }
+                return $item->getData('scope_id');
             }
         }
 
@@ -202,28 +208,28 @@ class Session extends SessionManager implements SessionInterface
 
     /**
      *
-     * Get is location checked flag
+     * Get store ID
      *
-     * @return bool
+     * @return int
      *
      */
-    public function getIsLocationChecked()
+    public function getStoreId()
     {
-        return $this->storage->getData(self::IS_LOCATION_CHECKED);
+        return $this->storage->getData(self::STORE_ID);
     }
 
     /**
      *
-     * Set is location checked flag
+     * Set store ID
      *
-     * @param bool $isLocationChecked
+     * @param int $storeId
      *
      * @return void
      *
      */
-    public function setIsLocationChecked($isLocationChecked)
+    public function setStoreId($storeId)
     {
-        $this->storage->setData(self::IS_LOCATION_CHECKED, $isLocationChecked);
+        $this->storage->setData(self::STORE_ID, $storeId);
     }
 
     /**
@@ -285,7 +291,6 @@ class Session extends SessionManager implements SessionInterface
          * @note Create collection
          *
          */
-        /** @var Collection $collection */
         $collection = $this->_collectionFactory->create();
 
         /**
