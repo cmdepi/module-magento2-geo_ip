@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @description DI configuration
+ *
+ * @author Bina Commerce      <https://www.binacommerce.com>
+ * @author C. M. de Picciotto <cmdepicciotto@binacommerce.com>
+ *
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    /**
+     *
+     * @note Router list
+     *
+     */
+    -->
+    <type name="Magento\Framework\App\RouterList">
+        <!--
+        /**
+         *
+         * @note Arguments
+         *
+         */
+        -->
+        <arguments>
+            <!--
+            /**
+             *
+             * @note Router list
+             *
+             */
+            -->
+            <argument name="routerList" xsi:type="array">
+                <!--
+                /**
+                 *
+                 * @note Add geo IP router
+                 * @note It is executed before the urlrewrite, standard, cms and default router, to be able to set the related store
+                 *
+                 */
+                -->
+                <item name="geoip" xsi:type="array">
+                    <item name="class" xsi:type="string">Bina\GeoIp\Controller\Router</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">15</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>
