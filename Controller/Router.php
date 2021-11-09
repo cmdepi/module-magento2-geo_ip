@@ -233,13 +233,6 @@ class Router implements RouterInterface
     {
         /**
          *
-         * @note Avoid store code in URL
-         *
-         */
-        $store->setData('has_disable_store_in_url', true);
-
-        /**
-         *
          * @note Set redirect URL
          *
          */
