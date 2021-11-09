@@ -138,7 +138,7 @@ class Session extends SessionManager implements SessionInterface
      *
      * @return int
      *
-     * @note It returned 0 as store ID when it is not possible to determine a store for user IP
+     * @note It returns 0 as store ID when it is not possible to determine a store for user IP
      *
      */
     public function getUserStoreFromIp()
