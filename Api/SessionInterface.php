@@ -20,14 +20,14 @@ interface SessionInterface
 
     /**
      *
-     * Get user store from IP
+     * Get user store ID from IP
      *
      * @return int
      *
      * @note It returns 0 as store ID when it is not possible to determine a store for user IP
      *
      */
-    public function getUserStoreFromIp();
+    public function getUserStoreIdFromIp();
 
     /**
      *

@@ -154,7 +154,7 @@ class Router implements RouterInterface
              * @note Get store ID related to user IP
              *
              */
-            $storeId = $this->_session->getUserStoreFromIp();
+            $storeId = $this->_session->getUserStoreIdFromIp();
 
             /**
              *

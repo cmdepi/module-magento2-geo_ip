@@ -134,28 +134,35 @@ class Session extends SessionManager implements SessionInterface
 
     /**
      *
-     * Get user store from IP
+     * Get user store ID from IP
      *
      * @return int
      *
      * @note It returns 0 as store ID when it is not possible to determine a store for user IP
      *
      */
-    public function getUserStoreFromIp()
+    public function getUserStoreIdFromIp()
     {
         /**
          *
-         * @note Check if store ID is already set in user session
+         * @note Check if store ID was already determined
          *
          */
-        if (!is_null($storeId = $this->getStoreId())) {
+        if (!is_null($this->getStoreId())) {
             /**
              *
              * @note Return store ID
              *
              */
-            return $storeId;
+            return $this->getStoreId();
         }
+
+        /**
+         *
+         * @note Init store ID as no store
+         *
+         */
+        $storeId = 0;
 
         /**
          *
@@ -192,20 +199,27 @@ class Session extends SessionManager implements SessionInterface
             if ($item) {
                 /**
                  *
-                 * @note Return store ID
+                 * @note Get store ID
                  * @note All config values are at store level, so the scope ID is related to a store ID
                  *
                  */
-                return $item->getData('scope_id');
+                $storeId = $item->getData('scope_id');
             }
         }
 
         /**
          *
-         * @note Return no store
+         * @note Set store ID in session to avoid determine it again
          *
          */
-        return 0;
+        $this->setStoreId($storeId);
+
+        /**
+         *
+         * @note Return store ID
+         *
+         */
+        return $storeId;
     }
 
     /**
