@@ -13,6 +13,15 @@
     <!--
     /**
      *
+     * @note Add preference for geo IP management interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\GeoManagementInterface" type="Bina\GeoIp\Model\GeoManagement"/>
+
+    <!--
+    /**
+     *
      * @note Add preference for geo IP info interface
      *
      */
