@@ -17,4 +17,15 @@ interface SystemConfigInterface
      *
      */
     const GEO_IP_COUNTRIES = 'general/country/geo_ip';
+
+    /**
+     *
+     * Get store ID by country code (in IS0 2 format)
+     *
+     * @param string $countryCode
+     *
+     * @return int|null
+     *
+     */
+    public function getStoreIdByCountryCode($countryCode);
 }

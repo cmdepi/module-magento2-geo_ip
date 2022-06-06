@@ -31,6 +31,15 @@
     <!--
     /**
      *
+     * @note Add preference for geo IP system config interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\SystemConfigInterface" type="Bina\GeoIp\Model\System\Config"/>
+
+    <!--
+    /**
+     *
      * @note Geo IP session model
      *
      */
