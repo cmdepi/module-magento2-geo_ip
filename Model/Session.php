@@ -6,9 +6,12 @@
  * @author Bina Commerce      <https://www.binacommerce.com>
  * @author C. M. de Picciotto <cmdepicciotto@binacommerce.com>
  *
+ * @note This session model is intended to work like the checkout session model and its get quote feature
+ *
  */
 namespace Bina\GeoIp\Model;
 
+use Exception;
 use Magento\Framework\DataObject;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\State;
@@ -23,6 +26,7 @@ use Magento\Framework\Session\ValidatorInterface;
 use Magento\Framework\Session\StorageInterface;
 use Magento\Framework\Session\SessionStartChecker;
 use Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory;
+use Bina\GeoIp\Api\LoggerInterface;
 use Bina\GeoIp\Api\SystemConfigInterface;
 use Bina\GeoIp\Api\SessionInterface;
 use Bina\GeoIp\Api\IpInfoInterfaceFactory;
@@ -36,6 +40,13 @@ class Session extends SessionManager implements SessionInterface
      *
      */
     protected $_ipInfoFactory;
+
+    /**
+     *
+     * @var LoggerInterface
+     *
+     */
+    protected $_logger;
 
     /**
      *
@@ -63,6 +74,7 @@ class Session extends SessionManager implements SessionInterface
      * Constructor
      *
      * @param IpInfoInterfaceFactory   $ipInfoFactory
+     * @param LoggerInterface          $logger
      * @param CollectionFactory        $collectionFactory
      * @param RemoteAddress            $remoteAddress
      * @param Http                     $request
@@ -79,6 +91,7 @@ class Session extends SessionManager implements SessionInterface
      */
     public function __construct(
         IpInfoInterfaceFactory $ipInfoFactory,
+        LoggerInterface        $logger,
         CollectionFactory      $collectionFactory,
         RemoteAddress          $remoteAddress,
         Http                   $request,
@@ -98,6 +111,13 @@ class Session extends SessionManager implements SessionInterface
          *
          */
         $this->_ipInfoFactory = $ipInfoFactory;
+
+        /**
+         *
+         * @note Init logger
+         *
+         */
+        $this->_logger = $logger;
 
         /**
          *
@@ -166,45 +186,60 @@ class Session extends SessionManager implements SessionInterface
 
         /**
          *
-         * @note Get user IP details
+         * @note Try to get IP details
          *
          */
-        $ipDetails = $this->_getIpDetails();
-
-        /**
-         *
-         * @note Check if country exists for user IP
-         *
-         */
-        if (isset($ipDetails->country)) {
+        try {
             /**
              *
-             * @note Get country related to IP
+             * @note Get user IP details
              *
              */
-            $country = $ipDetails->country;
+            $ipDetails = $this->_getIpDetails();
 
             /**
              *
-             * @note Get config item
+             * @note Check if country exists for user IP
              *
              */
-            $item = $this->_getConfigItemRelatedToCountry($country);
-
-            /**
-             *
-             * @note Check item
-             *
-             */
-            if ($item) {
+            if (isset($ipDetails->country)) {
                 /**
                  *
-                 * @note Get store ID
-                 * @note All config values are at store level, so the scope ID is related to a store ID
+                 * @note Get country related to IP
                  *
                  */
-                $storeId = $item->getData('scope_id');
+                $country = $ipDetails->country;
+
+                /**
+                 *
+                 * @note Get config item
+                 *
+                 */
+                $item = $this->_getConfigItemRelatedToCountry($country);
+
+                /**
+                 *
+                 * @note Check item
+                 *
+                 */
+                if ($item) {
+                    /**
+                     *
+                     * @note Get store ID
+                     * @note All config values are at store level, so the scope ID is related to a store ID
+                     *
+                     */
+                    $storeId = $item->getData('scope_id');
+                }
             }
+        }
+        catch (Exception $e) {
+            /**
+             *
+             * @note Log exception
+             *
+             */
+            $this->_logger->info('[' . $this->_getUserIp() . ']' . ' ' . $e->getMessage());
         }
 
         /**
@@ -312,7 +347,7 @@ class Session extends SessionManager implements SessionInterface
         /**
          *
          * @note Get config data related to this default country
-         * @note Because the country code values are saved using the ISO 2 format, it is possible to filter using this like condition (all country codes have 3 characters, so it is not possible to have more than one coincidence)
+         * @note Because the country code values are saved using the ISO 2 format, it is possible to filter using this like condition (all country codes have 2 characters and are saved using a ',' as separator, so it is not possible to have more than one coincidence)
          *
          */
         $collection->addFieldToFilter('path', array('eq' => SystemConfigInterface::GEO_IP_COUNTRIES));

@@ -45,4 +45,42 @@
             <argument name="namespace" xsi:type="string">geo_ip</argument>
         </arguments>
     </virtualType>
+
+    <!--
+    /**
+     *
+     * @note Add preference for custom logger interface
+     *
+     */
+    -->
+    <preference for="Bina\GeoIp\Api\LoggerInterface" type="Bina\GeoIp\Logger\Logger"/>
+
+    <!--
+    /**
+     *
+     * @note Define custom logger
+     *
+     */
+    -->
+    <type name="Bina\GeoIp\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">geo</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Bina\GeoIp\Logger\Handler\Base</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!--
+    /**
+     *
+     * @note Define handler for custom logger
+     *
+     */
+    -->
+    <type name="Bina\GeoIp\Logger\Handler\Base">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
 </config>
