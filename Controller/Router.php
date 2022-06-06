@@ -11,6 +11,7 @@
  */
 namespace Bina\GeoIp\Controller;
 
+use Exception;
 use Magento\Framework\App\RouterInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ActionInterface;
@@ -23,16 +24,24 @@ use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Controller\Store\SwitchAction\CookieManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\Store;
-use Bina\GeoIp\Api\SessionInterface;
+use Bina\GeoIp\Api\LoggerInterface;
+use Bina\GeoIp\Api\GeoManagementInterface;
 
 class Router implements RouterInterface
 {
     /**
      *
-     * @var SessionInterface
+     * @var GeoManagementInterface
      *
      */
-    protected $_session;
+    protected $_geoManagement;
+
+    /**
+     *
+     * @var LoggerInterface
+     *
+     */
+    protected $_logger;
 
     /**
      *
@@ -73,7 +82,8 @@ class Router implements RouterInterface
      *
      * Constructor
      *
-     * @param SessionInterface         $session
+     * @param GeoManagementInterface   $geoManagement
+     * @param LoggerInterface          $logger
      * @param StoreManagerInterface    $storeManager
      * @param StoreRepositoryInterface $storeRepository
      * @param CookieManager            $cookieManager
@@ -82,7 +92,8 @@ class Router implements RouterInterface
      *
      */
     public function __construct(
-        SessionInterface         $session,
+        GeoManagementInterface   $geoManagement,
+        LoggerInterface          $logger,
         StoreManagerInterface    $storeManager,
         StoreRepositoryInterface $storeRepository,
         CookieManager            $cookieManager,
@@ -91,10 +102,17 @@ class Router implements RouterInterface
     ) {
         /**
          *
-         * @note Init geo IP session model
+         * @note Init geo management model
          *
          */
-        $this->_session = $session;
+        $this->_geoManagement = $geoManagement;
+
+        /**
+         *
+         * @note Init logger
+         *
+         */
+        $this->_logger = $logger;
 
         /**
          *
@@ -151,37 +169,52 @@ class Router implements RouterInterface
         if ($request->isGet()) {
             /**
              *
-             * @note Get store ID related to user IP
+             * @note Try to get geo information from request
              *
              */
-            $storeId = $this->_session->getUserStoreIdFromIp();
-
-            /**
-             *
-             * @note Check if current store is related to user IP store
-             *
-             */
-            if (($storeId) && ($storeId !== $this->_storeManager->getStore()->getId())) {
+            try {
                 /**
                  *
-                 * @note Get user IP store entity
+                 * @note Get store ID from request
                  *
                  */
-                $store = $this->_storeRepository->getActiveStoreByCode($storeId);
+                $storeId = $this->_geoManagement->processRequest($request);
 
                 /**
                  *
-                 * @note Set user IP store
+                 * @note Check if current store is related to user IP store
                  *
                  */
-                $this->_setCurrentStore($store);
+                if (($storeId) && ($storeId !== $this->_storeManager->getStore()->getId())) {
+                    /**
+                     *
+                     * @note Get user IP store entity
+                     *
+                     */
+                    $store = $this->_storeRepository->getActiveStoreByCode($storeId);
 
+                    /**
+                     *
+                     * @note Set user IP store
+                     *
+                     */
+                    $this->_setCurrentStore($store);
+
+                    /**
+                     *
+                     * @note Redirect to user IP store
+                     *
+                     */
+                    return $this->_redirect($request, $store);
+                }
+            }
+            catch (Exception $e) {
                 /**
                  *
-                 * @note Redirect to user IP store
+                 * @note Log error
                  *
                  */
-                return $this->_redirect($request, $store);
+                $this->_logger->info($e->getMessage());
             }
         }
 
