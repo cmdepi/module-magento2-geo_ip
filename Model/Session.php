@@ -12,7 +12,6 @@
 namespace Bina\GeoIp\Model;
 
 use Exception;
-use Magento\Framework\DataObject;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\State;
 use Magento\Framework\Stdlib\CookieManagerInterface;
@@ -25,7 +24,6 @@ use Magento\Framework\Session\SaveHandlerInterface;
 use Magento\Framework\Session\ValidatorInterface;
 use Magento\Framework\Session\StorageInterface;
 use Magento\Framework\Session\SessionStartChecker;
-use Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory;
 use Bina\GeoIp\Api\LoggerInterface;
 use Bina\GeoIp\Api\SystemConfigInterface;
 use Bina\GeoIp\Api\SessionInterface;
@@ -43,17 +41,17 @@ class Session extends SessionManager implements SessionInterface
 
     /**
      *
+     * @var SystemConfigInterface
+     *
+     */
+    protected $_config;
+
+    /**
+     *
      * @var LoggerInterface
      *
      */
     protected $_logger;
-
-    /**
-     *
-     * @var CollectionFactory
-     *
-     */
-    protected $_collectionFactory;
 
     /**
      *
@@ -74,8 +72,8 @@ class Session extends SessionManager implements SessionInterface
      * Constructor
      *
      * @param IpInfoInterfaceFactory   $ipInfoFactory
+     * @param SystemConfigInterface    $config
      * @param LoggerInterface          $logger
-     * @param CollectionFactory        $collectionFactory
      * @param RemoteAddress            $remoteAddress
      * @param Http                     $request
      * @param SidResolverInterface     $sidResolver
@@ -91,8 +89,8 @@ class Session extends SessionManager implements SessionInterface
      */
     public function __construct(
         IpInfoInterfaceFactory $ipInfoFactory,
+        SystemConfigInterface  $config,
         LoggerInterface        $logger,
-        CollectionFactory      $collectionFactory,
         RemoteAddress          $remoteAddress,
         Http                   $request,
         SidResolverInterface   $sidResolver,
@@ -114,17 +112,17 @@ class Session extends SessionManager implements SessionInterface
 
         /**
          *
+         * @note Init system config model
+         *
+         */
+        $this->_config = $config;
+
+        /**
+         *
          * @note Init logger
          *
          */
         $this->_logger = $logger;
-
-        /**
-         *
-         * @note Init collection factory
-         *
-         */
-        $this->_collectionFactory = $collectionFactory;
 
         /**
          *
@@ -212,24 +210,16 @@ class Session extends SessionManager implements SessionInterface
 
                 /**
                  *
-                 * @note Get config item
+                 * @note Check if there is a related store ID to the country obtained from the user's IP
                  *
                  */
-                $item = $this->_getConfigItemRelatedToCountry($country);
-
-                /**
-                 *
-                 * @note Check item
-                 *
-                 */
-                if ($item) {
+                if ($scopeId = $this->_getStoreIdByCountryCode($country)) {
                     /**
                      *
-                     * @note Get store ID
-                     * @note All config values are at store level, so the scope ID is related to a store ID
+                     * @note Set store ID
                      *
                      */
-                    $storeId = $item->getData('scope_id');
+                    $storeId = $scopeId;
                 }
             }
         }
@@ -328,38 +318,16 @@ class Session extends SessionManager implements SessionInterface
 
     /**
      *
-     * Get config item related to country
+     * Get store ID by country code
      *
      * @param string $countryCode
      *
-     * @return DataObject
+     * @return int|null
      *
      */
-    private function _getConfigItemRelatedToCountry($countryCode)
+    private function _getStoreIdByCountryCode($countryCode)
     {
-        /**
-         *
-         * @note Create collection
-         *
-         */
-        $collection = $this->_collectionFactory->create();
-
-        /**
-         *
-         * @note Get config data related to this default country
-         * @note Because the country code values are saved using the ISO 2 format, it is possible to filter using this like condition (all country codes have 2 characters and are saved using a ',' as separator, so it is not possible to have more than one coincidence)
-         *
-         */
-        $collection->addFieldToFilter('path', array('eq' => SystemConfigInterface::GEO_IP_COUNTRIES));
-        $collection->addFieldToFilter('value', array('like' => '%' . $countryCode . '%'));
-
-        /**
-         *
-         * @note Get first item
-         * @note We are going to assume that there is only one store related to this country
-         *
-         */
-        return $collection->getFirstItem();
+        return $this->_config->getStoreIdByCountryCode($countryCode);
     }
 
     /**
