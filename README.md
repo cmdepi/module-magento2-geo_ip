@@ -14,7 +14,7 @@ This little development allows the redirection of the customers to the respectiv
 To proceed with the installation of your module, you need to go to the [document root of your Magento installation](https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/tutorials/docroot.html) and run the following commands:
 
 ```
-composer require bina/module-popup
+composer require bina/module-geo-ip
 bin/magento setup:upgrade
 bin/magento setup:di:compile
 bin/magento setup:static-content:deploy
