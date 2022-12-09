@@ -29,7 +29,7 @@ bin/magento cache:flush
 
 ## Usage
 
-In order to find documentation on the use and related issues, visit the [official page](https://binacommerce.com/popup.html) of this development.
+In order to find documentation on the use and related issues, visit the [official page](https://binacommerce.com/geo-ip-redirect.html) of this development.
 
 ## Author
 
